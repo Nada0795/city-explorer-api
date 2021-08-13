@@ -3,11 +3,55 @@
 require('dotenv').config();
 const express = require("express");
 const server = express();
+const axios = require("axios");
 const cors = require('cors');
 const data =require('./data/wether.json');
 
 const PORT = process.env.PORT;
 server.use(cors());
+
+//http://localhost:3001/getPhotos?name=cities
+server.get('/getphoto',getPhotoHandler)
+
+
+async function getPhotoHandler(req,res){
+  const query=req.query.name;
+  const URL = `https://api.unsplash.com/photos?query=${query}&client_id=${process.env.UnSplash_Key}`;
+
+  // console.log(req.query);
+    // try{
+    //   const result =await axios.get(URL);
+    //   // console.log(result)
+    //   res.send(result.data);
+  
+    // }
+    // catch (error){
+    //   res.send(error);
+    // }
+    console.log('before promise');
+  axios
+  .get(URL)
+  .then(result=>{
+    console.log('inside promise');
+let photoArray=result.data.map(item=>{
+  return new photo(item);
+})
+
+   res.send(photoArray);
+  })
+.catch(eror=>{
+  res.send(error);
+})
+console.log('outside promise');
+}
+
+class photo {
+  constructor(item){
+    this.imgUrl = item.urls.raw
+    this.numLikes=item.likes
+  }
+}
+
 
 class Forecast {
 constructor(date,description){

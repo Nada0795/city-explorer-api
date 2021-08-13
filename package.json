@@ -11,8 +11,18 @@
   "author": "Nada Al-abdullah",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nada0795/city-explorer-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nada0795/city-explorer-api/issues"
+  },
+  "homepage": "https://github.com/Nada0795/city-explorer-api#readme"
 }
