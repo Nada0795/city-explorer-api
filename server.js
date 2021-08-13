@@ -1,60 +1,44 @@
-'use strict';
+'use strict'
 
-require('dotenv').config();
-const express = require("express");
-const server = express();
-const cors = require('cors');
-const data =require('./data/wether.json');
-
+const express = require ("express"); // import express library using require // npm i express
+const server =express();
+// // import json file
+// const weatherData = require('./data/weather.json'); // import json file
+require('dotenv').config(); // .env // npm i dotenv
+const cors = require('cors'); // cors // npm i cors
+server.use(cors()); // the server can take any req from any client
 const PORT = process.env.PORT;
-server.use(cors());
+const axios = require('axios');
 
-class Forecast {
-constructor(date,description){
-  this.date=date;
-  this.description=description;
-
-}
+const Weather = require('./Weather');
+const MoviesComp = require('./MoviesComp');
 
 
-}
-// const PORT = 3001
+// http://localhost:3001/ (/ === root route)
+server.get('/',(req,res) =>{ // we can call the req,res 
+res.send('hi from the root route'); 
+})
+//=======================================================================================================================
 
-// const lat = process.data.lat;
-// const lon = process.data.lon;
-// const searchQuery = process.data.city_name;
-
-// "description": "Low of 17.1, high of 23.6 with broken clouds",
-// "date": "2021-03-31"
-
-//http://localhost:3001/weather?lat=31.95&lon=35.91&searchQuery=Amman
-server.get('/weather',(req,res)=>{
-const lat = Number (req.query.lat);
-const lon = Number (req.query.lon);
-const cityName=req.query.searchQuery.toLowerCase();
-
-console.log(lat,lon,cityName);
-const result = []
-data.find(item=>{
-  if (item.city_name.toLowerCase()==cityName){
-item.data.forEach(day => {
-
-  const desc=`Low of ${day.low_temp}, high of ${day.high_temp},with ${day.weather.description}`
-console.log(day)
-result.push( new Forecast (day.datetime,desc))
-  
-});
+//http:localhost:3001/getWeather?lat=31.95&lon=35.91&searchQuery=Amman
+server.get('/getWeather', Weather.getWeatherHandler);
 
 
-  }
-} )
 
-result ? res.send(result) : res.status(500).send ('anything')
+//http:localhost:3001/movies?city=Amman
+server.get('/movies', MoviesComp.getMovieHandler);
+
+
+//=================================================================================================================
+
+// any other routes
+server.get('*', (req,res)=> {
+    res.status(404).send('page not found');
 })
 
 
+// listen, in the end of our code
+server.listen(PORT,() =>{ // callback fun, when u listen to the port and got the request run this callback func
+console.log(`Im listning on PORT ${PORT}`);
 
-
-server.listen(PORT, () => {
-  console.log(`im listening on PORT = ${PORT}`);
-});
+})
