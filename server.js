@@ -4,10 +4,13 @@ require('dotenv').config();
 const express = require("express");
 const server = express();
 const cors = require('cors');
-const data =require('./data/wether.json');
+// const data =require('./data/wether.json');
 const axios = require('axios');
 const PORT = process.env.PORT;
 server.use(cors());
+
+const Weather=require('./Weather');
+const MoviesComp=require('./MoviesComp');
 
 class Forecast {
 constructor(date,description){
@@ -15,6 +18,15 @@ constructor(date,description){
   this.description=description;
 
 }
+
+server.get('/',(req,res) =>{ 
+  res.send('hi from the root route'); 
+  })
+
+  server.get('/getWeather', Weather.getWeatherHandler);
+
+  server.get('/movies', MoviesComp.getMovieHandler);
+
 
 
 }
@@ -32,13 +44,13 @@ axios
 // console.log('outside promise');
 }
 
-// const PORT = 3001
+const PORT = 3001
 
-// const lat = process.data.lat;
-// const lon = process.data.lon;
-// const searchQuery = process.data.city_name;
+const lat = process.data.lat;
+const lon = process.data.lon;
+const searchQuery = process.data.city_name;
 
-// "description": "Low of 17.1, high of 23.6 with broken clouds",
+"description": "Low of 17.1, high of 23.6 with broken clouds",
 // "date": "2021-03-31"
 
 //http://localhost:3001/weather?lat=31.95&lon=35.91&searchQuery=Amman
@@ -47,14 +59,14 @@ const lat = Number (req.query.lat);
 const lon = Number (req.query.lon);
 const cityName=req.query.searchQuery.toLowerCase();
 
-console.log(lat,lon,cityName);
+// console.log(lat,lon,cityName);
 const result = []
 data.find(item=>{
   if (item.city_name.toLowerCase()==cityName){
 item.data.forEach(day => {
 
   const desc=`Low of ${day.low_temp}, high of ${day.high_temp},with ${day.weather.description}`
-console.log(day)
+// console.log(day)
 result.push( new Forecast (day.datetime,desc))
   
 });
@@ -116,7 +128,7 @@ return forMoviesObj;
 }
 
 
-class Movies { // movie class
+class Movies { 
   constructor(title,overview,vote_average,vote_count,poster_path,popularity,release_date) {
   this.title = title
   this.overview = overview
@@ -132,6 +144,11 @@ class Movies { // movie class
 server.get('*', (req,res)=> {
   res.status(404).send('page not found');
 })
+
+
+
+
+
 
 //listen
 server.listen(PORT, () => {
