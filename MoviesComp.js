@@ -3,13 +3,23 @@
 const axios = require('axios');
 const MoviesComp = {};
 
+let ourMemory={};
 MoviesComp.getMovieHandler = function(req,res){
   const city = req.query.city
 
-  //https://api.themoviedb.org/3/movie/550?api_key=5da0fe89faab93fafb9d23776003ee8b&query=amman
-  const URLMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}&query=${city}`
 
+  if (ourMemory[city]!==undefined){
+    console.log('get the data from memory');
+    res.send(ourMemory[city]);
+  }
 
+  else{
+    console.log('get the data from API');
+
+//https://api.themoviedb.org/3/movie/550?api_key=5da0fe89faab93fafb9d23776003ee8b&query=amman
+const URLMovie = `https://api.themoviedb.org/3/movie/550?api_key=${process.env.MOVIE_API_KEY}&query=${city}`
+
+  }
    
   axios
     .get(URLMovie)
@@ -47,7 +57,7 @@ MoviesComp.moviesForObject = (moviesObj) => {
   return forMoviesObj;
 }
  
- 
+}
 class Movies { // movie class
   constructor(title,overview,vote_average,vote_count,poster_path,popularity,release_date) {
     this.title = title
